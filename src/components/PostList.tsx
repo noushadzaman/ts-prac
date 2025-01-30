@@ -9,7 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Trash2 } from "lucide-react";
 import PostForm from "./PostForm";
 import Link from "next/link";
@@ -21,9 +21,14 @@ interface Post {
 }
 
 const PostList = () => {
-  const [posts, setPosts] = useState<Post[]>(
-    JSON.parse(localStorage.getItem("posts") || "[]") as Post[]
-  );
+  const [posts, setPosts] = useState<Post[]>([]);
+
+  useEffect(() => {
+    const savedPosts = localStorage.getItem("posts");
+    if (savedPosts) {
+      setPosts(JSON.parse(savedPosts));
+    }
+  }, []);
 
   const handleRemove = (id: string) => {
     const newPosts = posts.filter((post) => post.id !== id);

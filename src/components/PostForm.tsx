@@ -34,6 +34,7 @@ const PostForm: React.FC<PostFormProps> = ({ posts, setPosts, id }) => {
   const { register, handleSubmit, reset } = useForm<Post>();
 
   const onSubmit: SubmitHandler<Post> = (data) => {
+    "use client";
     if (!id) {
       const newPostId = crypto.randomUUID();
       const storedPosts = JSON.parse(
@@ -76,7 +77,7 @@ const PostForm: React.FC<PostFormProps> = ({ posts, setPosts, id }) => {
         <DialogHeader>
           <DialogTitle>Add Post</DialogTitle>
           <DialogDescription>
-            Add post here (posts will be stored in localstorage)
+            Add post here (posts will be stored in localStorage)
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)}>
