@@ -10,8 +10,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useEffect, useState } from "react";
-import AddPost from "./AddPost";
-import { Pencil, Trash2 } from "lucide-react";
+import { Trash2 } from "lucide-react";
+import PostForm from "./PostForm";
 
 interface Post {
   id: number;
@@ -34,11 +34,10 @@ const PostList = () => {
     setPosts(newPosts);
     localStorage.setItem("posts", JSON.stringify(newPosts));
   };
-  console.log(posts);
 
   return (
     <div className="flex flex-col gap-10 justify-center items-end pt-10 max-w-3xl mx-auto">
-      <AddPost posts={posts} setPosts={setPosts} />
+      <PostForm posts={posts} setPosts={setPosts} />
       <Table>
         <TableCaption>A list of your posts.</TableCaption>
         <TableHeader>
@@ -61,7 +60,7 @@ const PostList = () => {
                 {post.content}
               </TableCell>
               <TableCell>
-                <Pencil className="cursor-pointer" />
+                <PostForm posts={posts} setPosts={setPosts} id={post.id} />
               </TableCell>
               <TableCell className="flex flex-col items-end justify-center">
                 <Trash2
