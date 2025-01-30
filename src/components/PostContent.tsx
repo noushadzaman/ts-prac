@@ -12,15 +12,9 @@ interface Post {
 export default function PostContent() {
   const { id } = useParams() as { id: string | undefined };
   const [post, setPost] = useState<Post | null>(null);
-  const [isClient, setIsClient] = useState(false); // Track if we're on the client
 
   useEffect(() => {
-    // Ensure this only runs on the client-side
-    setIsClient(true);
-  }, []);
-
-  useEffect(() => {
-    if (!id || !isClient) return; // Ensure we're on the client
+    if (!id) return;
 
     const postsData = window.localStorage.getItem("posts");
     if (!postsData) {
@@ -32,9 +26,8 @@ export default function PostContent() {
     const posts = JSON.parse(postsData) as Post[];
     const foundPost = posts.find((p) => p.id === id);
     setPost(foundPost || null);
-  }, [id, isClient]);
+  }, [id]);
 
-  if (!isClient) return <div>Loading...</div>; // Show loading state until client-side is ready
 
   return (
     <div>
