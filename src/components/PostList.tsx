@@ -9,27 +9,23 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Trash2 } from "lucide-react";
 import PostForm from "./PostForm";
+import Link from "next/link";
 
 interface Post {
-  id: number;
+  id: string;
   title: string;
   content: string;
 }
 
 const PostList = () => {
-  const [posts, setPosts] = useState<Post[]>([]);
+  const [posts, setPosts] = useState<Post[]>(
+    JSON.parse(localStorage.getItem("posts") || "[]") as Post[]
+  );
 
-  useEffect(() => {
-    const storedPosts = JSON.parse(
-      localStorage.getItem("posts") || "[]"
-    ) as Post[];
-    setPosts(storedPosts);
-  }, []);
-
-  const handleRemove = (id: number) => {
+  const handleRemove = (id: string) => {
     const newPosts = posts.filter((post) => post.id !== id);
     setPosts(newPosts);
     localStorage.setItem("posts", JSON.stringify(newPosts));
@@ -50,21 +46,21 @@ const PostList = () => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {posts.map((post, idx) => (
-            <TableRow key={idx}>
+          {posts.map(({ id, title, content }, idx) => (
+            <TableRow key={id}>
               <TableCell className="font-medium">{idx + 1}</TableCell>
               <TableCell className="max-w-[40px] overflow-hidden">
-                {post.title}
+                <Link href={`/post/${id}`}>{title}</Link>
               </TableCell>
               <TableCell className="max-w-[40px] overflow-hidden">
-                {post.content}
+                {content}
               </TableCell>
               <TableCell>
-                <PostForm posts={posts} setPosts={setPosts} id={post.id} />
+                <PostForm posts={posts} setPosts={setPosts} id={id} />
               </TableCell>
               <TableCell className="flex flex-col items-end justify-center">
                 <Trash2
-                  onClick={() => handleRemove(post.id)}
+                  onClick={() => handleRemove(id)}
                   className="cursor-pointer"
                 />
               </TableCell>

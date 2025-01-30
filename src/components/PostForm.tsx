@@ -17,12 +17,12 @@ import { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 
 interface Post {
-  id: number;
+  id: string;
   title: string;
   content: string;
 }
 interface PostFormProps {
-  id?: number;
+  id?: string;
   posts: Post[];
   setPosts: React.Dispatch<React.SetStateAction<Post[]>>;
 }
@@ -35,17 +35,15 @@ const PostForm: React.FC<PostFormProps> = ({ posts, setPosts, id }) => {
 
   const onSubmit: SubmitHandler<Post> = (data) => {
     if (!id) {
+      const newPostId = crypto.randomUUID();
       const storedPosts = JSON.parse(
         localStorage.getItem("posts") || "[]"
       ) as Post[];
       localStorage.setItem(
         "posts",
-        JSON.stringify([
-          ...storedPosts,
-          { ...data, id: storedPosts.length + 1 },
-        ])
+        JSON.stringify([...storedPosts, { ...data, id: newPostId }])
       );
-      setPosts([...posts, { ...data, id: storedPosts.length + 1 }]);
+      setPosts([...posts, { ...data, id: newPostId }]);
       setOpen(false);
       reset();
     } else {
