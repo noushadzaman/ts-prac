@@ -1,10 +1,19 @@
 "use client";
 
-import { useParams } from "next/navigation";
-import PostContent from "@/components/PostContent";
+import { FC } from "react";
 
-export default function Page() {
-  const { id } = useParams() as { id: string };
-
-  return <PostContent id={id} />;
+interface Params {
+  id: string;
 }
+
+
+const Page: FC<{ params: Params }> = ({ params: { id } }) => {
+
+  return (
+    <div>
+      <h1>{id}</h1>
+    </div>
+  );
+};
+
+export default Page;
