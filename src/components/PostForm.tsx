@@ -34,7 +34,6 @@ const PostForm: React.FC<PostFormProps> = ({ posts, setPosts, id }) => {
   const { register, handleSubmit, reset } = useForm<Post>();
 
   const onSubmit: SubmitHandler<Post> = (data) => {
-    "use client";
     if (!id) {
       const newPostId = crypto.randomUUID();
       const storedPosts = JSON.parse(
@@ -48,7 +47,10 @@ const PostForm: React.FC<PostFormProps> = ({ posts, setPosts, id }) => {
       setOpen(false);
       reset();
     } else {
-      const newPosts = posts.map((post) => {
+      const storedPosts = JSON.parse(
+        localStorage.getItem("posts") || "[]"
+      ) as Post[];
+      const newPosts = storedPosts.map((post) => {
         if (post.id === id) {
           return { ...post, title: data.title, content: data.content };
         } else {
@@ -66,7 +68,7 @@ const PostForm: React.FC<PostFormProps> = ({ posts, setPosts, id }) => {
       <DialogTrigger asChild>
         <div>
           {id ? (
-            <Pencil className="cursor-pointer" />
+            <Pencil className="cursor-pointer hover:scale-150 transition-all duration-300" />
           ) : (
             <Button variant="destructive">ADD POST</Button>
           )}
