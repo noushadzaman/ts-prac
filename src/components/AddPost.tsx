@@ -16,25 +16,29 @@ import { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 
 interface Post {
+  id: number;
   title: string;
   content: string;
 }
+interface AddPostProps {
+  posts: Post[];
+  setPosts: React.Dispatch<React.SetStateAction<Post[]>>;
+}
 
-const AddPost = () => {
+const AddPost: React.FC<AddPostProps> = ({ posts, setPosts }) => {
   const [open, setOpen] = useState(false);
 
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm<Post>();
+  const { register, handleSubmit, reset } = useForm<Post>();
 
   const onSubmit: SubmitHandler<Post> = (data) => {
     const storedPosts = JSON.parse(
       localStorage.getItem("posts") || "[]"
     ) as Post[];
-    localStorage.setItem("posts", JSON.stringify([...storedPosts, data]));
+    localStorage.setItem(
+      "posts",
+      JSON.stringify([...storedPosts, { ...data, id: storedPosts.length + 1 }])
+    );
+    setPosts([...posts, { ...data, id: storedPosts.length + 1 }]);
     setOpen(false);
     reset();
   };
@@ -42,7 +46,7 @@ const AddPost = () => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline">ADD POST</Button>
+        <Button variant="destructive">ADD POST</Button>
       </DialogTrigger>
 
       <DialogContent className="sm:max-w-[425px]">
@@ -73,7 +77,7 @@ const AddPost = () => {
                 id="content"
                 placeholder="post content here"
                 className="col-span-3"
-                {...register("content")}
+                {...register("content", { required: true })}
               />
             </div>
           </div>
